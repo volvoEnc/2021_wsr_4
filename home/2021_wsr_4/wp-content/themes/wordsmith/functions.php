@@ -13,5 +13,36 @@ function includeJs() {
     wp_enqueue_script('main_js', get_stylesheet_directory_uri() . '/js/main.js', false, false, true);
 }
 
+function theme_register_nav_menu() {
+    register_nav_menu( 'main', 'Основное меню' );
+}
+
+function customize_register(WP_Customize_Manager $customizer) {
+    $customizer->add_section(
+        'about_text_s',
+        [
+            'title' => 'Главная страница',
+            'description' => 'Редактирование информации на главной странице',
+            'priority' => 11
+        ]
+    );
+    $customizer->add_setting(
+        'about_test_sett'
+    );
+    $customizer->add_control(
+        'about_test_sett',
+        [
+            'label' => 'О зоопарке',
+            'section' => 'about_text_s',
+            'type' => 'textarea'
+        ]
+    );
+}
+
+
+
+add_action('customize_register', 'customize_register');
+
 add_action('wp_enqueue_scripts', 'includeCss');
-add_action( 'wp_enqueue_scripts', 'includeJs' );
+add_action('wp_enqueue_scripts', 'includeJs');
+add_action('after_setup_theme', 'theme_register_nav_menu');
