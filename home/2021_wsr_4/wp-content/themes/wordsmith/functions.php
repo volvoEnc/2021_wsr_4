@@ -27,9 +27,15 @@ function customize_register(WP_Customize_Manager $customizer) {
             'priority' => 11
         ]
     );
-    $customizer->add_setting(
-        'about_test_sett'
-    );
+    $customizer->add_setting('about_test_sett');
+    $customizer->add_setting('phone');
+    $customizer->add_setting('address');
+    $customizer->add_setting('rules');
+    $customizer->add_setting('job_time');
+    $customizer->add_setting('map_image', [
+            'height' => 300
+    ]);
+
     $customizer->add_control(
         'about_test_sett',
         [
@@ -38,6 +44,43 @@ function customize_register(WP_Customize_Manager $customizer) {
             'type' => 'textarea'
         ]
     );
+    $customizer->add_control(
+        'phone',
+        [
+            'label' => 'Телефон',
+            'section' => 'about_text_s',
+            'type' => 'text'
+        ]
+    );
+    $customizer->add_control(
+        'address',
+        [
+            'label' => 'Адрес зоопарка',
+            'section' => 'about_text_s',
+            'type' => 'text'
+        ]
+    );
+    $customizer->add_control(
+        'rules',
+        [
+            'label' => 'Правила посещения',
+            'section' => 'about_text_s',
+            'type' => 'textarea'
+        ]
+    );
+    $customizer->add_control(
+        'job_time',
+        [
+            'label' => 'Время работы зоопарка',
+            'section' => 'about_text_s',
+            'type' => 'textarea'
+        ]
+    );
+    $customizer->add_control(new WP_Customize_Image_Control($customizer, 'map_image', [
+        'label' => 'Карта-заглушка',
+        'section' => 'about_text_s',
+        'settings' => 'map_image'
+    ]));
 }
 
 function add_animal_type_post(){
@@ -71,36 +114,78 @@ function add_animal_type_post(){
 
 
 function animal_add_fields() {
-    add_meta_box( 'extra_fields', 'Дополнительные поля', 'extra_fields_box_func', 'animal', 'normal', 'high');
+    add_meta_box( 'animal_fields', 'Информация о животном', 'animal_fields_call', 'animal', 'normal', 'high');
 }
 
-// код блока
-function extra_fields_box_func( $post ){
-    ?>
-    <p><label><input type="text" name="extra[title]" value="<?php echo get_post_meta($post->ID, 'title', 1); ?>" style="width:50%" /> ? заголовок страницы (title)</label></p>
+function add_animal_save($postId) {
+    if (!empty($_POST['animal'])) {
+        foreach ($_POST['animal'] as $key => $value) {
+            update_post_meta($postId, $key, $value);
+        }
+    }
+    return $postId;
+}
 
-    <p>Описание статьи (description):
-        <textarea type="text" name="extra[description]" style="width:100%;height:50px;"><?php echo get_post_meta($post->ID, 'description', 1); ?></textarea>
+function animal_fields_call($post){ ?>
+    <p>
+        <b>Название животного (лат)</b>
+        <br>
+        <label>
+            <input type="text" name="animal[name_lat]" value="<?php echo get_post_meta($post->ID, 'name_lat', 1); ?>" style="width:30%" />
+        </label>
     </p>
-
-    <p><select name="extra[select]">
-            <?php $sel_v = get_post_meta($post->ID, 'select', 1); ?>
-            <option value="0">----</option>
-            <option value="1" <?php selected( $sel_v, '1' )?> >Выбери меня</option>
-            <option value="2" <?php selected( $sel_v, '2' )?> >Нет, меня</option>
-            <option value="3" <?php selected( $sel_v, '3' )?> >Лучше меня</option>
-        </select> ? выбор за вами</p>
-
-    <input type="hidden" name="extra_fields_nonce" value="<?php echo wp_create_nonce(__FILE__); ?>" />
+    <p>
+        <b>Кличка питомца</b>
+        <br>
+        <label>
+            <input type="text" name="animal[nickname]" value="<?php echo get_post_meta($post->ID, 'nickname', 1); ?>" style="width:30%" />
+        </label>
+    </p>
+    <p>
+        <b>Ареал</b>
+        <br>
+        <label>
+            <input type="text" name="animal[areal]" value="<?php echo get_post_meta($post->ID, 'areal', 1); ?>" style="width:30%" />
+        </label>
+    </p>
+    <p>
+        <b>Возраст</b>
+        <br>
+        <label>
+            <input type="text" name="animal[age]" value="<?php echo get_post_meta($post->ID, 'age', 1); ?>" style="width:30%" />
+        </label>
+    </p>
+    <p>
+        <b>Ссылка на дополнительные материалы</b>
+        <br>
+        <label>
+            <input type="text" name="animal[link]" value="<?php echo get_post_meta($post->ID, 'link', 1); ?>" style="width:30%" />
+        </label>
+    </p>
+    <p>
+        <b>Описание</b>
+        <br>
+        <label>
+            <textarea name="animal[description]" style="width:50%"><?=get_post_meta($post->ID, 'description', 1)?></textarea>
+        </label>
+    </p>
+    <p>
+        <b>Научная классификация</b>
+        <br>
+        <label>
+            <textarea name="animal[class]" id="description" style="width:50%"><?=get_post_meta($post->ID, 'class', 1)?></textarea>
+        </label>
+    </p>
     <?php
 }
 
 
 add_action('customize_register', 'customize_register');
-add_action('add_meta_boxes', 'animal_add_fields', 1);
+add_action('add_meta_boxes', 'animal_add_fields');
 add_action('wp_enqueue_scripts', 'includeCss');
 add_action('wp_enqueue_scripts', 'includeJs');
 add_action('after_setup_theme', 'theme_register_nav_menu');
 add_action('init', 'add_animal_type_post');
+add_action('save_post', 'add_animal_save');
 
 add_theme_support( 'post-thumbnails' );
