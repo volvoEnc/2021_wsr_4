@@ -73,7 +73,7 @@
     </div> <!-- end entries-wrap -->
 </section>
 
-<section class="s-content">
+<section class="s-content" id="section_contacts">
 
     <div class="row narrow">
         <div class="col-full s-content__header aos-init aos-animate" data-aos="fade-up">
@@ -129,7 +129,6 @@
 <script>
     function send() {
         $el = document.getElementById('send_m');
-        console.log($el)
         $el.value = 'Заявка отправлена'
     }
 </script>

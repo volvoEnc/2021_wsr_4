@@ -5,7 +5,7 @@
     <!--- basic page needs
     ================================================== -->
     <meta charset="utf-8">
-    <title>Wordsmith</title>
+    <title><?=bloginfo('name')?></title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -38,9 +38,7 @@
 <header class="s-header header">
 
     <div class="header__logo">
-        <a class="logo" href="index.html">
-            <img src="<?=get_template_directory_uri(). '/images/logo.svg'?>" alt="Homepage">
-        </a>
+        <?=the_custom_logo()?>
     </div> <!-- end header__logo -->
 
     <a class="header__search-trigger" href="#0"></a>

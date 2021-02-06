@@ -9,8 +9,9 @@ function includeCss() {
 
 function includeJs() {
     wp_enqueue_script('modernizr_js', get_stylesheet_directory_uri() . '/js/modernizr.js');
-    wp_enqueue_script('jquery_js', get_stylesheet_directory_uri() . '/js/jquery-3.2.1.min.js', false, false, true);
+    wp_enqueue_script('jquery_js', get_stylesheet_directory_uri() . '/js/jquery-3.2.1.min.js', false, false, false);
     wp_enqueue_script('plugins_js', get_stylesheet_directory_uri() . '/js/plugins.js', false, false, true);
+    wp_enqueue_script('qrcode_js', get_stylesheet_directory_uri() . '/js/qrcode.js', false, false, false);
     wp_enqueue_script('main_js', get_stylesheet_directory_uri() . '/js/main.js', false, false, true);
 }
 
@@ -189,3 +190,4 @@ add_action('init', 'add_animal_type_post');
 add_action('save_post', 'add_animal_save');
 
 add_theme_support( 'post-thumbnails' );
+add_theme_support( 'custom-logo' );
